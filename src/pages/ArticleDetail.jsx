@@ -38,8 +38,15 @@ const CodeBlock = ({ node, inline, className, children, ...props }) => {
         >
           {copied ? <><Check size={14} /> Copied!</> : <><Copy size={14} /> Copy</>}
         </button>
-        <pre style={{ margin: 0 }}>
-          <code className={className} {...props}>
+        <pre style={{ 
+          margin: 0, 
+          padding: '1.5rem',
+          background: 'var(--bg-secondary)',
+          border: '1px solid var(--accent-primary)',
+          borderRadius: 0,
+          overflowX: 'auto'
+        }}>
+          <code className={className} style={{ fontSize: '0.8em', color: 'var(--text-primary)', background: 'transparent', padding: 0, border: 'none' }} {...props}>
             {children}
           </code>
         </pre>
@@ -63,8 +70,8 @@ const ImageWithLabel = ({ src, alt, title }) => {
 };
 
 function ArticleDetail() {
-  const { id } = useParams();
-  const article = articlesData.find(a => a.id === parseInt(id));
+  const { id } = useParams(); // 'id' in the route is now the slug
+  const article = articlesData.find(a => a.slug === id);
 
   if (!article) {
     return (
@@ -123,9 +130,7 @@ function ArticleDetail() {
         .article-content blockquote { border-left: 4px solid var(--accent-primary); margin: 0 0 1.5rem 0; background: var(--bg-secondary); padding: 1rem 1.5rem; border-radius: 0; font-style: normal; color: var(--text-primary); }
         .article-content blockquote p { margin-bottom: 0; }
         .article-content code { background: var(--bg-secondary); padding: 0.2rem 0.4rem; border-radius: 0; font-size: 0.9em; font-family: var(--font-main); color: var(--text-primary); border: 1px solid var(--card-border); }
-        .article-content pre { background: var(--bg-secondary); padding: 1.5rem; border-radius: 0; overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid var(--accent-primary); box-shadow: none; }
-        .article-content pre code { background: transparent; padding: 0; color: var(--text-primary); font-size: 0.95em; border: none; }
-        .article-content img { max-width: 100%; height: auto; border-radius: 0; margin-bottom: 1.5rem; box-shadow: none; display: block; border: 1px solid var(--accent-primary); filter: grayscale(1) contrast(1.2); }
+        .article-content img { max-width: 100%; height: auto; border-radius: 0; margin-bottom: 1.5rem; box-shadow: none; display: block; border: 1px solid var(--accent-primary); padding: 0.5rem; }
         .article-content hr { border: 0; border-top: 1px solid var(--card-border); margin: 3rem 0; }
         .article-content table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
         .article-content th, .article-content td { padding: 0.75rem 1rem; border: 1px solid var(--card-border); text-align: left; }

@@ -5,8 +5,15 @@ import article3Raw from './articles/3-tableau.md?raw';
 
 const parseArticle = (id, rawContent) => {
   const parsed = fm(rawContent);
+  const slug = parsed.attributes.title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove non-word chars
+    .replace(/\s+/g, '-')     // Replace spaces with -
+    .replace(/-+/g, '-');      // Replace multiple - with single -
+    
   return {
     id,
+    slug,
     ...parsed.attributes,
     content: parsed.body
   };
