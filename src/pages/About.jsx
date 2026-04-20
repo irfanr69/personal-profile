@@ -87,7 +87,7 @@ function About() {
                 <img 
                   src="./assets/profile.jpg" 
                   alt="Irfan Rizqulloh" 
-                  style={{ width: '200px', height: '200px', borderRadius: '50%', objectFit: 'cover', border: '4px solid var(--accent-primary)', marginBottom: '1.5rem', boxShadow: '0 15px 35px rgba(16, 185, 129, 0.25)', display: 'block', margin: '0 auto 1.5rem auto', filter: 'contrast(1.08) saturate(1.15) brightness(1.05)' }} 
+                  style={{ width: '200px', height: '200px', borderRadius: '0', objectFit: 'cover', border: '4px solid var(--accent-primary)', marginBottom: '1.5rem', boxShadow: 'none', display: 'block', margin: '0 auto 1.5rem auto' }} 
                 />
                 <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Irfan Rizqulloh</h2>
                 <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
