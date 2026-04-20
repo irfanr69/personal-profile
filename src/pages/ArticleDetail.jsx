@@ -60,12 +60,12 @@ function ArticleDetail() {
         .article-content em { font-style: italic; }
         .article-content a { color: var(--accent-primary); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s ease; }
         .article-content a:hover { border-bottom-color: var(--accent-primary); }
-        .article-content blockquote { border-left: 4px solid var(--accent-primary); margin: 0 0 1.5rem 0; background: rgba(16, 185, 129, 0.05); padding: 1rem 1.5rem; border-radius: 0 8px 8px 0; font-style: italic; color: var(--text-secondary); }
+        .article-content blockquote { border-left: 4px solid var(--accent-primary); margin: 0 0 1.5rem 0; background: var(--bg-secondary); padding: 1rem 1.5rem; border-radius: 0; font-style: normal; color: var(--text-primary); }
         .article-content blockquote p { margin-bottom: 0; }
-        .article-content code { background: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.9em; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #e2e8f0; }
-        .article-content pre { background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px; overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid var(--glass-border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        .article-content pre code { background: transparent; padding: 0; color: #f8f8f2; font-size: 0.95em; }
-        .article-content img { max-width: 100%; height: auto; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.3); display: block; }
+        .article-content code { background: var(--bg-secondary); padding: 0.2rem 0.4rem; border-radius: 0; font-size: 0.9em; font-family: var(--font-main); color: var(--text-primary); border: 1px solid var(--card-border); }
+        .article-content pre { background: var(--bg-secondary); padding: 1.5rem; border-radius: 0; overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid var(--accent-primary); box-shadow: none; }
+        .article-content pre code { background: transparent; padding: 0; color: var(--text-primary); font-size: 0.95em; border: none; }
+        .article-content img { max-width: 100%; height: auto; border-radius: 0; margin-bottom: 1.5rem; box-shadow: none; display: block; border: 1px solid var(--accent-primary); filter: contrast(1.2) sepia(1) hue-rotate(90deg) saturate(3); }
         .article-content hr { border: 0; border-top: 1px solid var(--card-border); margin: 3rem 0; }
         .article-content table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
         .article-content th, .article-content td { padding: 0.75rem 1rem; border: 1px solid var(--card-border); text-align: left; }
