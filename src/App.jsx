@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
+import Projects from './pages/Projects';
+import Glossary from './pages/Glossary';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
@@ -23,6 +25,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/glossary" element={<Glossary />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/article/:id" element={<ArticleDetail />} />
       </Routes>

@@ -20,4 +20,4 @@ Ansible changed everything for me. Unlike other configuration management tools, 
 
 ## Conclusion
 
-If you're still configuring servers by hand, I highly recommend giving Ansible a try. It forces you to think about your infrastructure systematically and drastically reduces the "it works on my machine" problem.
+If you're still configuring servers by hand, I highly recommend giving [Ansible](https://www.ansible.com/) a try. It forces you to think about your infrastructure systematically and drastically reduces the "it works on my machine" problem.

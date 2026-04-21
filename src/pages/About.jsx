@@ -1,73 +1,9 @@
 import React from 'react';
 import { GraduationCap, CheckCircle2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { experiencesData, organizationsData, certificationsData } from '../data/about';
 
 function About() {
-  const experiences = [
-    {
-      id: 1,
-      role: "Vulnerability Assessment Intern",
-      company: "PT Bank CIMB Niaga Tbk",
-      period: "October 2025 - April 2026",
-      description: "Performed vulnerability scanning across enterprise applications and prepared structured reports for remediation. Evaluated CVE severity levels to prioritize critical patching and developed automated scripts that accelerated documentation workflows by 30%."
-    },
-    {
-      id: 2,
-      role: "Facilitator - Google Data Analytic Course",
-      company: "Dicoding X Telkom",
-      period: "October 2024 - February 2025",
-      description: "Facilitated learning for 38 corporate participants in data analytics. Provided guidance and motivation that resulted in a 60% task completion rate, demonstrating strong leadership and communication skills."
-    },
-    {
-      id: 3,
-      role: "Data Visualization Intern",
-      company: "PT Global Data Inspirasi",
-      period: "June 2021 - October 2021",
-      description: "Visualized COVID-19 data across Yogyakarta using Tableau. Created public dashboards featuring maps, bar charts, and line graphs after cleaning and transforming raw datasets for effective visualization."
-    }
-  ];
-
-  const organizations = [
-    {
-      id: 1,
-      role: "Staff, Election Day Volunteer (KPPS)",
-      organization: "Purwokerto, Jawa Tengah",
-      period: "December 2023 - February 2024",
-      description: "Assisted in vote counting and reporting under strict time constraints. Collaborated with team members to maintain transparency and order."
-    },
-    {
-      id: 2,
-      role: "Database Monitoring",
-      organization: "Traditional Games Return (TGR)",
-      period: "September 2020 - January 2022",
-      description: "Managed administrative data for 200 participants and 80 team members. Organized and monitored database operations for the 'Merdeka Bermain' event."
-    },
-    {
-      id: 3,
-      role: "Vice Chairman",
-      organization: "Student Election Supervisory Board (Bawasra)",
-      period: "March 2021 - October 2021",
-      description: "Oversaw presidential election activities for the Student Executive Board."
-    },
-    {
-      id: 4,
-      role: "Media and Communication Staff",
-      organization: "Sentral Kerohanian Islam (Rohis)",
-      period: "June 2020 - June 2021",
-      description: "Designed event posters and Islamic quotes using Adobe Illustrator and Photoshop. Mentored 18 students in Islamic Studies."
-    }
-  ];
-
-  const certifications = [
-    "AWS Certified Solutions Architect – Associate",
-    "AWS Certified SysOps Administrator – Associate",
-    "Google Cloud Certified Professional Cloud Architect",
-    "Google Cloud Certified Professional Data Engineer",
-    "EC-Council Certified Security Specialist v9",
-    "CompTIA DataSys+ Certified",
-    "Microsoft Certified – Power BI Data Analyst Associate",
-    "GitHub Foundations Certification"
-  ];
-
   return (
     <>
       <header className="hero" style={{ minHeight: '40vh', paddingBottom: '2rem' }}>
@@ -99,18 +35,18 @@ function About() {
               <h2 style={{ fontSize: '2rem', marginBottom: '2rem', textAlign: 'center' }}>Professional Experience</h2>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                {experiences.map(exp => (
-                  <div key={exp.id} className="card" style={{ padding: '2rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-                      <div>
-                        <h3 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>{exp.role}</h3>
-                        <h4 style={{ fontSize: '1.1rem', color: 'var(--accent-primary)', fontWeight: '500' }}>{exp.company}</h4>
-                      </div>
-                      <span style={{ background: 'rgba(255,255,255,0.05)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                {experiencesData.map(exp => (
+                  <div key={exp.id} className="card" style={{ padding: '2.5rem' }}>
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <h3 style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '0.3rem' }}>{exp.role}</h3>
+                      <h4 style={{ fontSize: '1.1rem', color: 'var(--accent-primary)', fontWeight: '600', marginBottom: '0.8rem' }}>{exp.company}</h4>
+                      <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', opacity: 0.8 }}>
                         {exp.period}
-                      </span>
+                      </div>
                     </div>
-                    <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', margin: 0 }}>{exp.description}</p>
+                    <div className="markdown-content" style={{ color: 'var(--text-secondary)', lineHeight: '1.8', margin: 0 }}>
+                      <ReactMarkdown>{exp.content}</ReactMarkdown>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -119,18 +55,18 @@ function About() {
                 <h2 style={{ fontSize: '2rem', marginBottom: '2rem', textAlign: 'center' }}>Leadership & Organizations</h2>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                  {organizations.map(org => (
-                    <div key={org.id} className="card" style={{ padding: '2rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-                        <div>
-                          <h3 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>{org.role}</h3>
-                          <h4 style={{ fontSize: '1.1rem', color: 'var(--accent-primary)', fontWeight: '500' }}>{org.organization}</h4>
-                        </div>
-                        <span style={{ background: 'rgba(255,255,255,0.05)', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                  {organizationsData.map(org => (
+                    <div key={org.id} className="card" style={{ padding: '2.5rem' }}>
+                      <div style={{ marginBottom: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '0.3rem' }}>{org.role}</h3>
+                        <h4 style={{ fontSize: '1.1rem', color: 'var(--accent-primary)', fontWeight: '600', marginBottom: '0.8rem' }}>{org.organization}</h4>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', opacity: 0.8 }}>
                           {org.period}
-                        </span>
+                        </div>
                       </div>
-                      <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', margin: 0 }}>{org.description}</p>
+                      <div className="markdown-content" style={{ color: 'var(--text-secondary)', lineHeight: '1.8', margin: 0 }}>
+                        <ReactMarkdown>{org.content}</ReactMarkdown>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -138,23 +74,33 @@ function About() {
 
               <div style={{ marginTop: '5rem' }}>
                 <h2 style={{ fontSize: '2rem', marginBottom: '2rem', textAlign: 'center' }}>Education & Certifications</h2>
-                <div className="card" style={{ padding: '2rem' }}>
+                <div className="card" style={{ padding: '2.5rem' }}>
                   <h3 style={{ marginBottom: '0.5rem', color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <GraduationCap size={28} />
                     Bachelor of Computer Science
                   </h3>
-                  <h5 style={{ marginBottom: '1rem', color: 'var(--text-secondary)', fontWeight: 'normal' }}>Telkom University (GPA: 3.67) • Graduated Feb 2025</h5>
+                  <h5 style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)', fontWeight: 'normal' }}>Telkom University (GPA: 3.67)</h5>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', opacity: 0.8, marginBottom: '1rem' }}>
+                    Graduated February 2025
+                  </div>
                   <p style={{ marginBottom: '2rem', color: 'var(--text-secondary)' }}>Thesis: Implementation of Ansible for Orchestrating Bastion Server in Demilitarized Zone.</p>
                   
                   <h4 style={{ marginBottom: '1.5rem', color: 'var(--text-primary)', fontSize: '1.2rem' }}>Key Certifications:</h4>
-                  <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {certifications.map((cert, index) => (
-                      <li key={index} style={{ marginBottom: '1rem', display: 'flex', alignItems: 'flex-start', gap: '1rem', fontSize: '1.05rem' }}>
-                        <span style={{ color: 'var(--accent-secondary)' }}><CheckCircle2 size={20} /></span> 
-                        <span style={{ color: 'var(--text-secondary)' }}>{cert}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="cert-markdown" style={{ color: 'var(--text-secondary)' }}>
+                    <ReactMarkdown 
+                      components={{
+                        li: ({node, children, ...props}) => (
+                          <li style={{ marginBottom: '1rem', display: 'flex', alignItems: 'flex-start', gap: '1rem', fontSize: '1.05rem' }}>
+                            <span style={{ color: 'var(--accent-secondary)', flexShrink: 0, marginTop: '2px' }}><CheckCircle2 size={20} /></span>
+                            <span>{children}</span>
+                          </li>
+                        ),
+                        ul: ({node, ...props}) => <ul style={{ listStyle: 'none', padding: 0 }} {...props} />
+                      }}
+                    >
+                      {certificationsData?.content || ''}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               </div>
 
@@ -162,6 +108,12 @@ function About() {
           </div>
         </section>
       </main>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        .markdown-content p { margin-bottom: 0; }
+        .markdown-content ul, .markdown-content ol { padding-left: 1.5rem; margin-top: 0.5rem; }
+        .markdown-content li { margin-bottom: 0.3rem; }
+      `}} />
     </>
   );
 }

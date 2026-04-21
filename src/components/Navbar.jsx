@@ -7,6 +7,8 @@ function Navbar() {
   const isHome = location.pathname === '/';
   const isArticles = location.pathname.startsWith('/article');
   const isAbout = location.pathname === '/about';
+  const isProjects = location.pathname === '/projects';
+  const isGlossary = location.pathname === '/glossary';
 
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,7 +39,9 @@ function Navbar() {
         <div className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
           <Link to="/" className={isHome ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Home</Link>
           <Link to="/about" className={isAbout ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>About Me</Link>
+          <Link to="/projects" className={isProjects ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Projects</Link>
           <Link to="/articles" className={isArticles ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Articles</Link>
+          <Link to="/glossary" className={isGlossary ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Glossary</Link>
         </div>
 
         <div className="nav-actions">

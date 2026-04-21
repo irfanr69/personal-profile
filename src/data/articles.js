@@ -1,26 +1,29 @@
 import fm from 'front-matter';
-import article1Raw from './articles/1-ansible.md?raw';
-import article2Raw from './articles/2-proxmox.md?raw';
-import article3Raw from './articles/3-tableau.md?raw';
 
-const parseArticle = (id, rawContent) => {
-  const parsed = fm(rawContent);
+// Using import.meta.glob to dynamically import all MD files in src/data/articles
+const articleFiles = import.meta.glob('./articles/*.md', { query: '?raw', eager: true });
+
+const parseArticle = (path, rawContent) => {
+  const parsed = fm(rawContent.default);
   const slug = parsed.attributes.title
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // Remove non-word chars
-    .replace(/\s+/g, '-')     // Replace spaces with -
-    .replace(/-+/g, '-');      // Replace multiple - with single -
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
     
   return {
-    id,
+    id: path,
     slug,
     ...parsed.attributes,
     content: parsed.body
   };
 };
 
-export const articlesData = [
-  parseArticle(1, article1Raw),
-  parseArticle(2, article2Raw),
-  parseArticle(3, article3Raw)
-];
+export const articlesData = Object.entries(articleFiles)
+  .map(([path, content]) => parseArticle(path, content))
+  .sort((a, b) => {
+    // Sort by filename number if possible (descending for articles usually)
+    const aNum = parseInt(a.id.match(/\d+/)) || 0;
+    const bNum = parseInt(b.id.match(/\d+/)) || 0;
+    return bNum - aNum;
+  });

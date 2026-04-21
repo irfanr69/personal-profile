@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { ArrowLeft, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Info } from 'lucide-react';
 import { articlesData } from '../data/articles';
+import { glossaryData } from '../data/glossary';
 
 const CodeBlock = ({ node, inline, className, children, ...props }) => {
   const [copied, setCopied] = useState(false);
@@ -69,8 +70,139 @@ const ImageWithLabel = ({ src, alt, title }) => {
   );
 };
 
+const MarkdownLink = ({ href, children }) => {
+  return (
+    <a 
+      href={href} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      title={`Visit ${href}`}
+      style={{ 
+        color: 'var(--accent-primary)', 
+        textDecoration: 'none', 
+        borderBottom: '1px solid var(--accent-primary)', 
+        paddingBottom: '1px',
+        transition: 'all 0.2s ease' 
+      }}
+    >
+      {children}
+    </a>
+  );
+};
+
+// Smart Responsive Glossary Term component
+const GlossaryTerm = ({ term, definition }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [shift, setShift] = useState(0);
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    if (isVisible && wrapperRef.current) {
+      const rect = wrapperRef.current.getBoundingClientRect();
+      const screenWidth = window.innerWidth;
+      const popupWidth = Math.min(260, screenWidth * 0.8);
+      const center = rect.left + (rect.width / 2);
+      const margin = 20;
+
+      let newShift = 0;
+      if (center + (popupWidth / 2) > screenWidth - margin) {
+        newShift = (screenWidth - margin) - (center + (popupWidth / 2));
+      } else if (center - (popupWidth / 2) < margin) {
+        newShift = margin - (center - (popupWidth / 2));
+      }
+      setShift(newShift);
+    }
+  }, [isVisible]);
+
+  return (
+    <span 
+      ref={wrapperRef}
+      className="glossary-term-wrapper"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsVisible(!isVisible);
+      }}
+      style={{
+        position: 'relative',
+        display: 'inline-block',
+        cursor: 'help'
+      }}
+    >
+      <span style={{
+        borderBottom: '2px dashed var(--accent-primary)',
+        color: 'var(--text-primary)',
+        fontWeight: 'bold'
+      }}>
+        {term}
+      </span>
+      
+      {isVisible && (
+        <div 
+          className="glossary-popup"
+          style={{
+            position: 'absolute',
+            bottom: 'calc(100% + 10px)',
+            left: `calc(50% + ${shift}px)`,
+            transform: 'translateX(-50%)',
+            width: '260px',
+            maxWidth: '80vw',
+            background: 'var(--card-bg)',
+            border: '2px solid var(--accent-primary)',
+            padding: '12px',
+            zIndex: 100000,
+            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+            fontSize: '0.9rem',
+            lineHeight: '1.4',
+            color: 'var(--text-primary)',
+            pointerEvents: 'none'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--accent-primary)', fontWeight: 'bold', borderBottom: '1px solid var(--card-border)', paddingBottom: '4px' }}>
+            <Info size={14} /> {term}
+          </div>
+          {definition}
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: `calc(50% - ${shift}px)`,
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '8px solid transparent',
+            borderRight: '8px solid transparent',
+            borderTop: '8px solid var(--accent-primary)'
+          }}></div>
+        </div>
+      )}
+    </span>
+  );
+};
+
+// Component to handle glossary term highlighting
+const TextWithGlossary = ({ children }) => {
+  if (typeof children !== 'string') return children;
+
+  const terms = [...glossaryData].sort((a, b) => b.term.length - a.term.length);
+  if (terms.length === 0) return children;
+
+  const escapedTerms = terms.map(t => t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const regex = new RegExp(`\\b(${escapedTerms})\\b`, 'gi');
+
+  const parts = children.split(regex);
+  
+  return parts.map((part, index) => {
+    const matchingTerm = terms.find(t => t.term.toLowerCase() === part.toLowerCase());
+    if (matchingTerm) {
+      return <GlossaryTerm key={index} term={part} definition={matchingTerm.definition} />;
+    }
+    return part;
+  });
+};
+
 function ArticleDetail() {
-  const { id } = useParams(); // 'id' in the route is now the slug
+  const { id } = useParams();
   const article = articlesData.find(a => a.slug === id);
 
   if (!article) {
@@ -105,8 +237,25 @@ function ArticleDetail() {
       <main>
         <section className="section" style={{ paddingTop: '1rem' }}>
           <div className="container">
-            <div className="article-content" style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.15rem', lineHeight: '1.8' }}>
-              <ReactMarkdown components={{ code: CodeBlock, img: ImageWithLabel }}>
+            <div className="article-content" style={{ 
+              maxWidth: '800px', 
+              margin: '0 auto', 
+              fontSize: '1.15rem', 
+              lineHeight: '1.8',
+              overflow: 'visible' 
+            }}>
+              <ReactMarkdown 
+                components={{ 
+                  code: CodeBlock, 
+                  img: ImageWithLabel, 
+                  a: MarkdownLink,
+                  p: ({children}) => <p style={{ overflow: 'visible' }}><TextWithGlossary>{children}</TextWithGlossary></p>,
+                  li: ({children}) => <li style={{ overflow: 'visible' }}><TextWithGlossary>{children}</TextWithGlossary></li>,
+                  h1: ({children}) => <h1>{children}</h1>,
+                  h2: ({children}) => <h2>{children}</h2>,
+                  h3: ({children}) => <h3>{children}</h3>
+                }}
+              >
                 {article.content}
               </ReactMarkdown>
             </div>
@@ -114,17 +263,15 @@ function ArticleDetail() {
         </section>
       </main>
 
-      {/* Global styles specifically for the injected Markdown content */}
       <style dangerouslySetInnerHTML={{__html: `
         .article-content > *:first-child { margin-top: 0; }
+        .article-content h1, .article-content h2, .article-content h3 { overflow: visible; }
         .article-content h1 { margin-top: 3rem; margin-bottom: 1.5rem; font-size: 2.5rem; color: var(--text-primary); line-height: 1.2; }
         .article-content h2 { margin-top: 3rem; margin-bottom: 1.5rem; font-size: 2rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; line-height: 1.3; }
         .article-content h3 { margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary); line-height: 1.4; }
         .article-content p { margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.8; }
-        .article-content ul, .article-content ol { margin-bottom: 1.5rem; padding-left: 2rem; color: var(--text-secondary); line-height: 1.8; }
+        .article-content ul, .article-content ol { margin-bottom: 1.5rem; padding-left: 2rem; color: var(--text-secondary); line-height: 1.8; overflow: visible; }
         .article-content li { margin-bottom: 0.5rem; }
-        .article-content strong { color: var(--text-primary); font-weight: 600; }
-        .article-content em { font-style: italic; }
         .article-content a { color: var(--accent-primary); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s ease; }
         .article-content a:hover { border-bottom-color: var(--accent-primary); }
         .article-content blockquote { border-left: 4px solid var(--accent-primary); margin: 0 0 1.5rem 0; background: var(--bg-secondary); padding: 1rem 1.5rem; border-radius: 0; font-style: normal; color: var(--text-primary); }
@@ -132,9 +279,12 @@ function ArticleDetail() {
         .article-content code { background: var(--bg-secondary); padding: 0.2rem 0.4rem; border-radius: 0; font-size: 0.9em; font-family: var(--font-main); color: var(--text-primary); border: 1px solid var(--card-border); }
         .article-content img { max-width: 100%; height: auto; border-radius: 0; margin-bottom: 1.5rem; box-shadow: none; display: block; border: 1px solid var(--accent-primary); padding: 0.5rem; }
         .article-content hr { border: 0; border-top: 1px solid var(--card-border); margin: 3rem 0; }
-        .article-content table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
-        .article-content th, .article-content td { padding: 0.75rem 1rem; border: 1px solid var(--card-border); text-align: left; }
-        .article-content th { background: var(--card-bg); color: var(--text-primary); font-weight: 600; }
+        
+        .glossary-popup { animation: fadeInSimple 0.15s ease-out; }
+        @keyframes fadeInSimple {
+          from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
       `}} />
     </>
   );

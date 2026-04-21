@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, Search, Calendar } from 'lucide-react';
 import { articlesData } from '../data/articles';
 
 function Articles() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
 
-  const filteredArticles = articlesData.filter(article => 
-    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 600);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const parseDate = (dateStr) => new Date(dateStr);
+
+  const filteredArticles = articlesData
+    .filter(article => 
+      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      const dateA = parseDate(a.date);
+      const dateB = parseDate(b.date);
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
 
   return (
     <>
@@ -25,13 +41,13 @@ function Articles() {
       <main>
         <section className="section">
           <div className="container">
-            {/* Search Bar */}
-            <div style={{ maxWidth: '800px', margin: '0 auto 3rem auto', position: 'relative' }}>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            {/* Search and Filter Bar */}
+            <div style={{ maxWidth: '800px', margin: '0 auto 3rem auto', display: 'flex', gap: '0.5rem' }}>
+              <div style={{ position: 'relative', flexGrow: 1, display: 'flex', alignItems: 'center' }}>
                 <Search size={20} style={{ position: 'absolute', left: '1rem', color: 'var(--text-secondary)' }} />
                 <input 
                   type="text" 
-                  placeholder="Search articles (e.g. Ansible, Proxmox...)" 
+                  placeholder={isMobile ? "Search..." : "Search articles..."} 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{
@@ -47,19 +63,60 @@ function Articles() {
                   }}
                 />
               </div>
-              {searchQuery && (
-                <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                  Found {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'} matching "{searchQuery}"
-                </div>
-              )}
+              
+              <div style={{ 
+                position: 'relative', 
+                display: 'flex', 
+                alignItems: 'center', 
+                width: isMobile ? '50px' : '180px',
+                transition: 'width 0.3s ease'
+              }}>
+                <Calendar size={20} style={{ 
+                  position: 'absolute', 
+                  left: isMobile ? '50%' : '1rem', 
+                  transform: isMobile ? 'translateX(-50%)' : 'none',
+                  color: 'var(--text-secondary)', 
+                  pointerEvents: 'none' 
+                }} />
+                <select 
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: isMobile ? '1rem 0' : '1rem 1rem 1rem 3rem',
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--card-border)',
+                    color: isMobile ? 'transparent' : 'var(--text-primary)',
+                    fontFamily: 'var(--font-main)',
+                    fontSize: '1rem',
+                    borderRadius: 0,
+                    outline: 'none',
+                    appearance: 'none',
+                    cursor: 'pointer',
+                    textAlign: isMobile ? 'center' : 'left'
+                  }}
+                  title="Sort by date"
+                >
+                  <option value="newest" style={{ color: 'var(--text-primary)', background: 'var(--bg-secondary)' }}>Newest First</option>
+                  <option value="oldest" style={{ color: 'var(--text-primary)', background: 'var(--bg-secondary)' }}>Oldest First</option>
+                </select>
+              </div>
             </div>
+
+            {searchQuery && (
+              <div style={{ maxWidth: '800px', margin: '-2rem auto 2rem auto', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                Found {filteredArticles.length} matching "{searchQuery}"
+              </div>
+            )}
 
             <div className="articles-container" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '800px', margin: '0 auto' }}>
               {filteredArticles.length > 0 ? (
                 filteredArticles.map(article => (
                   <article key={article.id} className="card" style={{ padding: '2.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                      <span>{article.date}</span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Calendar size={14} /> {article.date}
+                      </span>
                       <span>{article.readTime}</span>
                     </div>
                     <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>{article.title}</h3>
