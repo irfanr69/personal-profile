@@ -1,6 +1,6 @@
 ---
 title: "Setting up a Secure DMZ using Proxmox"
-date: "Sep 15, 2026"
+date: "Sep 15, 2025"
 excerpt: "Step-by-step guide on creating a demilitarized zone in a virtualized environment to keep your internal network safe."
 readTime: "8 min read"
 ---

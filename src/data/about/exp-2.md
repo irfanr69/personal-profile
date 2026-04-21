@@ -1,7 +1,7 @@
 ---
 type: experience
-role: Facilitator - Google Data Analytic Course
-company: Dicoding X Telkom
+role: Facilitator
+company: Dicoding X Telkom - Google Data Analytic Course
 period: October 2024 - February 2025
 order: 2
 ---

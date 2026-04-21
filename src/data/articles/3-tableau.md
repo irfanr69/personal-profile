@@ -1,6 +1,6 @@
 ---
 title: "Visualizing Data: From Spreadsheets to Tableau"
-date: "Aug 02, 2026"
+date: "Aug 02, 2025"
 excerpt: "How to effectively turn raw Excel data into interactive dashboards that tell a compelling story to stakeholders."
 readTime: "6 min read"
 ---

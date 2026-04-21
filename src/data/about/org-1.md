@@ -1,7 +1,7 @@
 ---
 type: organization
-role: Staff, Election Day Volunteer (KPPS)
-organization: Purwokerto, Jawa Tengah
+role: Staff
+organization: Election Day Volunteer (KPPS)
 period: December 2023 - February 2024
 order: 1
 ---

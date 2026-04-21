@@ -1,6 +1,6 @@
 ---
 title: "Why I Love Automating Infrastructure with Ansible"
-date: "Oct 24, 2026"
+date: "Oct 24, 2025"
 excerpt: "A deep dive into how configuration management tools can save you hundreds of hours of manual server configuration."
 readTime: "5 min read"
 ---
