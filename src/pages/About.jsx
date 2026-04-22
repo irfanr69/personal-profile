@@ -1,5 +1,4 @@
-import React from 'react';
-import { GraduationCap, CheckCircle2 } from 'lucide-react';
+import { GraduationCap, CheckCircle2, ExternalLink } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { experiencesData, organizationsData, certificationsData } from '../data/about';
 
@@ -30,6 +29,11 @@ function About() {
                   I am a Computer Science graduate from Telkom University with a deep passion for cloud infrastructure, cybersecurity, and data analytics. 
                   My goal is to build secure, scalable solutions and leverage data to drive decisions. I have hands-on experience orchestrating infrastructure, assessing vulnerabilities, and crafting interactive dashboards.
                 </p>
+                <div style={{ marginTop: '2rem' }}>
+                  <a href="./assets/cv.pdf" target="_blank" className="btn-primary" style={{ display: 'inline-block' }}>
+                    Download Resume
+                  </a>
+                </div>
               </div>
 
               <h2 style={{ fontSize: '2rem', marginBottom: '2rem', textAlign: 'center' }}>Professional Experience</h2>
@@ -92,10 +96,35 @@ function About() {
                         li: ({node, children, ...props}) => (
                           <li style={{ marginBottom: '1rem', display: 'flex', alignItems: 'flex-start', gap: '1rem', fontSize: '1.05rem' }}>
                             <span style={{ color: 'var(--accent-secondary)', flexShrink: 0, marginTop: '2px' }}><CheckCircle2 size={20} /></span>
-                            <span>{children}</span>
+                            <span className="cert-item-text">{children}</span>
                           </li>
                         ),
-                        ul: ({node, ...props}) => <ul style={{ listStyle: 'none', padding: 0 }} {...props} />
+                        ul: ({node, ...props}) => <ul style={{ listStyle: 'none', padding: 0 }} {...props} />,
+                        a: ({node, children, href, ...props}) => {
+                          const isNone = !href || href === '#' || href === 'none';
+                          if (isNone) return <span>{children}</span>;
+                          return (
+                            <a 
+                              href={href} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              title={`Visit ${href}`}
+                              style={{ 
+                                color: 'var(--accent-primary)', 
+                                textDecoration: 'none', 
+                                borderBottom: '1px solid var(--accent-primary)', 
+                                paddingBottom: '1px',
+                                transition: 'all 0.2s ease' 
+                              }} 
+                              {...props}
+                            >
+                              {children}
+                              <span style={{ display: 'inline-flex', verticalAlign: 'middle', marginLeft: '0.4rem' }}>
+                                <ExternalLink size={14} />
+                              </span>
+                            </a>
+                          );
+                        }
                       }}
                     >
                       {certificationsData?.content || ''}
@@ -113,6 +142,7 @@ function About() {
         .markdown-content p { margin-bottom: 0; }
         .markdown-content ul, .markdown-content ol { padding-left: 1.5rem; margin-top: 0.5rem; }
         .markdown-content li { margin-bottom: 0.3rem; }
+        .cert-item-text a:hover { opacity: 0.8; }
       `}} />
     </>
   );

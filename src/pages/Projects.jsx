@@ -29,12 +29,12 @@ function Projects() {
           <div className="container">
             <div className="card-container" style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', 
               gap: '2rem' 
             }}>
               {projectsData.map((project, index) => (
                 <div key={index} className="card" style={{ 
-                  padding: '2.5rem', 
+                  padding: 'clamp(1.5rem, 4vw, 2.5rem)', 
                   height: '100%', 
                   display: 'flex', 
                   flexDirection: 'column',
@@ -44,15 +44,15 @@ function Projects() {
                   <div style={{ color: 'var(--accent-primary)', marginBottom: '1.5rem' }}>
                     {getIcon(project.icon)}
                   </div>
-                  <h3 style={{ fontSize: '1.6rem', marginBottom: '1rem' }}>{project.title}</h3>
-                  <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', flexGrow: 1, lineHeight: '1.7' }}>
+                  <h3 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.6rem)', marginBottom: '1rem' }}>{project.title}</h3>
+                  <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', flexGrow: 1, lineHeight: '1.7', fontSize: 'clamp(0.95rem, 2vw, 1rem)' }}>
                     {project.description}
                   </p>
                   
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '2rem' }}>
                     {project.tags.map((tag, i) => (
                       <span key={i} style={{ 
-                        fontSize: '0.8rem', 
+                        fontSize: '0.75rem', 
                         padding: '0.2rem 0.6rem', 
                         border: '1px solid var(--text-secondary)',
                         color: 'var(--text-secondary)'
@@ -62,7 +62,7 @@ function Projects() {
                     ))}
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1.5rem' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
                     {project.github && project.github.trim() !== '' && project.github !== '#' && project.github !== 'none' && (
                       <a href={project.github} target="_blank" rel="noopener noreferrer" style={{ 
                         display: 'flex', 
