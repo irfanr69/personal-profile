@@ -22,8 +22,8 @@ const parseArticle = (path, rawContent) => {
 export const articlesData = Object.entries(articleFiles)
   .map(([path, content]) => parseArticle(path, content))
   .sort((a, b) => {
-    // Sort by filename number if possible (descending for articles usually)
-    const aNum = parseInt(a.id.match(/\d+/)) || 0;
-    const bNum = parseInt(b.id.match(/\d+/)) || 0;
-    return bNum - aNum;
+    // Sort by date (newest first)
+    const dateA = new Date(a.date || 0);
+    const dateB = new Date(b.date || 0);
+    return dateB - dateA;
   });
