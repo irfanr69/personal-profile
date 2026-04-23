@@ -8,6 +8,8 @@ import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
 import Projects from './pages/Projects';
 import Glossary from './pages/Glossary';
+import Tags from './pages/Tags';
+import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
@@ -27,8 +29,10 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/glossary" element={<Glossary />} />
+        <Route path="/tags/:tagName" element={<Tags />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/article/:id" element={<ArticleDetail />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       
       <Footer />

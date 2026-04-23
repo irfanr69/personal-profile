@@ -121,6 +121,40 @@ function Articles() {
                     </div>
                     <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>{article.title}</h3>
                     <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>{article.excerpt}</p>
+                    
+                    {article.tags && article.tags.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                        {article.tags.map((tag, i) => (
+                          <Link 
+                            key={i} 
+                            to={`/tags/${tag.replace(/\s+/g, '-').toLowerCase()}`}
+                            style={{ 
+                              fontSize: '0.75rem', 
+                              padding: '0.2rem 0.6rem', 
+                              border: '1px solid var(--text-secondary)',
+                              color: 'var(--text-secondary)',
+                              opacity: 0.8,
+                              textDecoration: 'none',
+                              transition: 'all 0.2s ease',
+                              cursor: 'pointer'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                              e.currentTarget.style.color = 'var(--accent-primary)';
+                              e.currentTarget.style.opacity = '1';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = 'var(--text-secondary)';
+                              e.currentTarget.style.color = 'var(--text-secondary)';
+                              e.currentTarget.style.opacity = '0.8';
+                            }}
+                          >
+                            {tag}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
                     <Link to={`/article/${article.slug}`} className="read-more" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent-primary)', fontWeight: '600', textDecoration: 'none' }}>
                       Read Article <ArrowRight size={18} />
                     </Link>

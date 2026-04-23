@@ -230,6 +230,36 @@ function ArticleDetail() {
               <span>•</span>
               <span>{article.readTime}</span>
             </div>
+            
+            {article.tags && article.tags.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.6rem', marginTop: '1.5rem' }}>
+                {article.tags.map((tag, i) => (
+                  <Link 
+                    key={i} 
+                    to={`/tags/${tag.replace(/\s+/g, '-').toLowerCase()}`}
+                    style={{ 
+                      fontSize: '0.8rem', 
+                      padding: '0.2rem 0.8rem', 
+                      border: '1px solid var(--card-border)',
+                      color: 'var(--text-secondary)',
+                      textDecoration: 'none',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                      e.currentTarget.style.color = 'var(--accent-primary)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--card-border)';
+                      e.currentTarget.style.color = 'var(--text-secondary)';
+                    }}
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </header>

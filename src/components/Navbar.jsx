@@ -9,6 +9,7 @@ function Navbar() {
   const isAbout = location.pathname === '/about';
   const isProjects = location.pathname === '/projects';
   const isGlossary = location.pathname === '/glossary';
+  const isTags = location.pathname === '/tags';
 
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
