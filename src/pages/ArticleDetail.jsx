@@ -233,7 +233,7 @@ function ArticleDetail() {
                 {article.tags.map((tag, i) => (
                   <Link 
                     key={i} 
-                    to={`/tags/${tag.replace(/\s+/g, '-').toLowerCase()}`}
+                    to={`/tags/${tag.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-.]/g, '')}`}
                     style={{ 
                       fontSize: '0.8rem', 
                       padding: '0.2rem 0.8rem', 

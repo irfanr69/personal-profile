@@ -12,6 +12,10 @@ function Tags() {
   const activeTagName = useMemo(() => {
     if (!rawTagName) return null;
     const normalized = rawTagName.replace(/-/g, ' ').toLowerCase();
+    // Special handling for common technical terms that might contain hyphens
+    const potentialTags = articlesData.flatMap(a => a.tags || []);
+    const match = potentialTags.find(t => t.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-.]/g, '') === rawTagName.toLowerCase());
+    if (match) return match;
     // Find exact match in data to preserve casing
     const allTags = new Set();
     articlesData.forEach(a => a.tags?.forEach(t => allTags.add(t)));
@@ -36,7 +40,7 @@ function Tags() {
     return Object.keys(counts).sort().map(lower => ({
       name: displayNames[lower],
       count: counts[lower],
-      slug: lower.replace(/\s+/g, '-')
+      slug: lower.replace(/\s+/g, '-').replace(/[^a-z0-9-.]/g, '')
     }));
   }, []);
 
@@ -62,7 +66,7 @@ function Tags() {
   const displayTags = useMemo(() => {
     if (activeTagNameLower && articlesByTag[activeTagNameLower]) {
       // Find the display name from our cloud
-      const cloudItem = tagCloud.find(t => t.slug === activeTagNameLower.replace(/\s+/g, '-'));
+      const cloudItem = tagCloud.find(t => t.slug === activeTagNameLower.replace(/\s+/g, '-').replace(/[^a-z0-9-.]/g, ''));
       return [{ 
         name: cloudItem?.name || activeTagName, 
         count: articlesByTag[activeTagNameLower].length,
