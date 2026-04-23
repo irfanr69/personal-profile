@@ -201,17 +201,14 @@ const TextWithGlossary = ({ children }) => {
   });
 };
 
+import NotFound from './NotFound';
+
 function ArticleDetail() {
   const { id } = useParams();
   const article = articlesData.find(a => a.slug === id);
 
   if (!article) {
-    return (
-      <div style={{ textAlign: 'center', padding: '5rem', color: 'white' }}>
-        <h2>Article not found</h2>
-        <Link to="/articles" style={{ color: 'var(--accent-primary)' }}>Back to Articles</Link>
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (
