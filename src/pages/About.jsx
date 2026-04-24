@@ -108,7 +108,6 @@ function About() {
                               href={href} 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              title={`Visit ${href}`}
                               style={{ 
                                 color: 'var(--accent-primary)', 
                                 textDecoration: 'none', 

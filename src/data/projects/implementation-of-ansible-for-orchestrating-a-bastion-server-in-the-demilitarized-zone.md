@@ -4,5 +4,6 @@ description: Automated the deployment and configuration of Bastion servers in a 
 tags: ["Ansible", "Linux", "Security"]
 github: #
 demo: https://watcher.zeusr.my.id/
+article: #
 icon: server
 ---

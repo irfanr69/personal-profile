@@ -4,5 +4,6 @@ description: Designed and implemented a highly available virtualization cluster 
 tags: ["Proxmox", "Ceph", "Virtualization", "NFS"]
 github: #
 demo: #
+article: #
 icon: cloud
 ---
