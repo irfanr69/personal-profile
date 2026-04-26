@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { ArrowLeft, Copy, Check, Info } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Info, List } from 'lucide-react';
 import { articlesData } from '../data/articles';
 import { glossaryData } from '../data/glossary';
+import GithubSlugger from 'github-slugger';
+
+const slugger = new GithubSlugger();
 
 const CodeBlock = ({ node, inline, className, children, ...props }) => {
   const [copied, setCopied] = useState(false);
@@ -206,10 +209,56 @@ import NotFound from './NotFound';
 function ArticleDetail() {
   const { id } = useParams();
   const article = articlesData.find(a => a.slug === id);
+  const [toc, setToc] = useState([]);
+
+  useEffect(() => {
+    const handleInitialScroll = () => {
+      const hash = window.location.hash;
+      if (hash && hash.includes('#')) {
+        const id = hash.split('#').pop();
+        const element = document.getElementById(id);
+        if (element) {
+          const top = element.getBoundingClientRect().top + window.pageYOffset - 100;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }
+    };
+    
+    // Small delay to ensure markdown is rendered
+    const timer = setTimeout(handleInitialScroll, 500);
+    return () => clearTimeout(timer);
+  }, [id, article]);
+
+  useEffect(() => {
+    if (article) {
+      const headingRegex = /^(##|###) (.*)$/gm;
+      const matches = [...article.content.matchAll(headingRegex)];
+      slugger.reset(); // Reset once before generating the list
+      const tocItems = matches.map(match => {
+        const level = match[1].length;
+        const text = match[2];
+        return {
+          level,
+          text,
+          id: slugger.slug(text)
+        };
+      });
+      setToc(tocItems);
+    }
+  }, [article]);
 
   if (!article) {
     return <NotFound />;
   }
+
+  const renderHeading = (level, children) => {
+    const text = React.Children.toArray(children).join('');
+    // Use a fresh slugger for rendering to ensure IDs match ToC exactly
+    const localSlugger = new GithubSlugger();
+    const id = localSlugger.slug(text);
+    const Tag = `h${level}`;
+    return <Tag id={id}>{children}</Tag>;
+  };
 
   return (
     <>
@@ -271,6 +320,78 @@ function ArticleDetail() {
               lineHeight: '1.8',
               overflow: 'visible' 
             }}>
+              {/* Table of Contents Section */}
+              {toc.length > 0 && (
+                <nav className="toc-container" style={{ 
+                  background: 'var(--bg-secondary)', 
+                  border: '1px solid var(--accent-primary)', 
+                  padding: '1.5rem', 
+                  marginBottom: '3rem',
+                  fontFamily: 'var(--font-main)'
+                }}>
+                  <div className="toc-title" style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.8rem', 
+                    marginBottom: '1.2rem', 
+                    color: 'var(--accent-primary)', 
+                    fontWeight: 'bold', 
+                    fontSize: '1rem', 
+                    textTransform: 'uppercase', 
+                    letterSpacing: '2px' 
+                  }}>
+                    <List size={18} /> <span>./table_of_contents</span><span className="blink">_</span>
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {toc.map((item, index) => (
+                      <li key={index} style={{ 
+                        marginLeft: item.level === 3 ? '1.5rem' : '0',
+                        marginBottom: '0.6rem'
+                      }}>
+                        <button 
+                          onClick={() => {
+                            const element = document.getElementById(item.id);
+                            if (element) {
+                              const top = element.getBoundingClientRect().top + window.pageYOffset - 100;
+                              window.scrollTo({ top, behavior: 'smooth' });
+                              window.location.hash = `/article/${article.slug}#${item.id}`;
+                            }
+                          }}
+                          style={{ 
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            cursor: 'pointer',
+                            color: 'var(--text-secondary)', 
+                            textDecoration: 'none',
+                            fontSize: '0.95rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.6rem',
+                            textAlign: 'left',
+                            fontFamily: 'var(--font-main)',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = 'var(--text-primary)';
+                            e.currentTarget.style.transform = 'translateX(5px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = 'var(--text-secondary)';
+                            e.currentTarget.style.transform = 'translateX(0)';
+                          }}
+                        >
+                          <span style={{ color: 'var(--accent-primary)', fontWeight: 'bold' }}>
+                            {item.level === 2 ? '::' : '>>'}
+                          </span> 
+                          {item.text}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
+
               <ReactMarkdown 
                 components={{ 
                   code: CodeBlock, 
@@ -278,9 +399,9 @@ function ArticleDetail() {
                   a: MarkdownLink,
                   p: ({children}) => <p style={{ overflow: 'visible' }}><TextWithGlossary>{children}</TextWithGlossary></p>,
                   li: ({children}) => <li style={{ overflow: 'visible' }}><TextWithGlossary>{children}</TextWithGlossary></li>,
-                  h1: ({children}) => <h1>{children}</h1>,
-                  h2: ({children}) => <h2>{children}</h2>,
-                  h3: ({children}) => <h3>{children}</h3>
+                  h1: ({children}) => renderHeading(1, children),
+                  h2: ({children}) => renderHeading(2, children),
+                  h3: ({children}) => renderHeading(3, children)
                 }}
               >
                 {article.content}
@@ -292,7 +413,7 @@ function ArticleDetail() {
 
       <style dangerouslySetInnerHTML={{__html: `
         .article-content > *:first-child { margin-top: 0; }
-        .article-content h1, .article-content h2, .article-content h3 { overflow: visible; }
+        .article-content h1, .article-content h2, .article-content h3 { overflow: visible; scroll-margin-top: 100px; }
         .article-content h1 { margin-top: 3rem; margin-bottom: 1.5rem; font-size: 2.5rem; color: var(--text-primary); line-height: 1.2; }
         .article-content h2 { margin-top: 3rem; margin-bottom: 1.5rem; font-size: 2rem; color: var(--text-primary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; line-height: 1.3; }
         .article-content h3 { margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary); line-height: 1.4; }
@@ -305,6 +426,7 @@ function ArticleDetail() {
         .article-content blockquote p { margin-bottom: 0; }
         .article-content code { background: var(--bg-secondary); padding: 0.2rem 0.4rem; border-radius: 0; font-size: 0.9em; font-family: var(--font-main); color: var(--text-primary); border: 1px solid var(--card-border); }
         .article-content img { max-width: 100%; height: auto; border-radius: 0; margin-bottom: 1.5rem; box-shadow: none; display: block; border: 1px solid var(--accent-primary); padding: 0.5rem; }
+        .article-content img:hover { border-color: var(--accent-secondary); }
         .article-content hr { border: 0; border-top: 1px solid var(--card-border); margin: 3rem 0; }
         
         .glossary-popup { animation: fadeInSimple 0.15s ease-out; }
