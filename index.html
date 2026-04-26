@@ -358,7 +358,7 @@ Here is a simple script that colors a range based on a value:\r
 \`\`\`typescript\r
 function main(workbook: ExcelScript.Workbook) {\r
   let sheet = workbook.getActiveWorksheet();\r
-  let range = sheet.getRange("A1:B10");\r
+  let range = sheet.getUsedRange();\r
   let values = range.getValues();\r
 \r
   for (let i = 0; i < values.length; i++) {\r
