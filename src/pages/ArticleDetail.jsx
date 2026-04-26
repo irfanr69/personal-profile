@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { ArrowLeft, Copy, Check, Info, List } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Info, List, ExternalLink, BookOpen } from 'lucide-react';
 import { articlesData } from '../data/articles';
 import { glossaryData } from '../data/glossary';
 import GithubSlugger from 'github-slugger';
@@ -85,10 +85,13 @@ const MarkdownLink = ({ href, children }) => {
         textDecoration: 'none', 
         borderBottom: '1px solid var(--accent-primary)', 
         paddingBottom: '1px',
-        transition: 'all 0.2s ease' 
+        transition: 'all 0.2s ease',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '0.3rem'
       }}
     >
-      {children}
+      {children} <ExternalLink size={14} style={{ opacity: 0.8 }} />
     </a>
   );
 };
@@ -210,6 +213,9 @@ function ArticleDetail() {
   const { id } = useParams();
   const article = articlesData.find(a => a.slug === id);
   const [toc, setToc] = useState([]);
+  
+  // Track hierarchy for shared access between effects and render
+  const pageSlugger = useRef(new GithubSlugger());
 
   useEffect(() => {
     const handleInitialScroll = () => {
@@ -233,31 +239,47 @@ function ArticleDetail() {
     if (article) {
       const headingRegex = /^(##|###) (.*)$/gm;
       const matches = [...article.content.matchAll(headingRegex)];
-      slugger.reset(); // Reset once before generating the list
+      let currentParent = "";
+      
       const tocItems = matches.map(match => {
         const level = match[1].length;
         const text = match[2];
-        return {
-          level,
-          text,
-          id: slugger.slug(text)
-        };
+        const rawSlug = new GithubSlugger().slug(text);
+        
+        let finalId;
+        if (level === 2) {
+          currentParent = rawSlug;
+          finalId = rawSlug;
+        } else {
+          finalId = currentParent ? `${currentParent}-${rawSlug}` : rawSlug;
+        }
+        
+        return { level, text, id: finalId };
       });
       setToc(tocItems);
     }
-  }, [article]);
+  }, [article, id]);
 
   if (!article) {
     return <NotFound />;
   }
 
+  // Hierarchical heading rendering
+  let renderParent = "";
   const renderHeading = (level, children) => {
     const text = React.Children.toArray(children).join('');
-    // Use a fresh slugger for rendering to ensure IDs match ToC exactly
-    const localSlugger = new GithubSlugger();
-    const id = localSlugger.slug(text);
+    const rawSlug = new GithubSlugger().slug(text);
+    
+    let finalId;
+    if (level === 2) {
+      renderParent = rawSlug;
+      finalId = rawSlug;
+    } else {
+      finalId = renderParent ? `${renderParent}-${rawSlug}` : rawSlug;
+    }
+    
     const Tag = `h${level}`;
-    return <Tag id={id}>{children}</Tag>;
+    return <Tag id={finalId}>{children}</Tag>;
   };
 
   return (

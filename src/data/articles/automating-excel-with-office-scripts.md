@@ -28,7 +28,7 @@ Here is a simple script that colors a range based on a value:
 ```typescript
 function main(workbook: ExcelScript.Workbook) {
   let sheet = workbook.getActiveWorksheet();
-  let range = sheet.getRange("A1:B10");
+  let range = sheet.getUsedRange();
   let values = range.getValues();
 
   for (let i = 0; i < values.length; i++) {
